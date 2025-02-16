@@ -52,7 +52,11 @@ def main(input_string, output_file, text_to_binary, text_to_morse, morse_to_text
         else:
             print("No output to write to file.")
 
-    print(printable_output)
+    if printable_output == "":
+        print(f"I could not convert {input_string} to anything.")
+    else:
+        print(printable_output)
+
 
 
 if __name__ == "__main__":
