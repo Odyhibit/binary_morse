@@ -14,12 +14,12 @@ Usage: binmorse.py [OPTIONS] <input>
 
 Options:
   -o, --output_file TEXT  Output filename. Will overwrite existing files.
-  -tb, --text_to_binary   Changes input_string text to binary.
-  -tm, --text_to_morse    Changes input_string text to morse code.
-  -mt, --morse_to_text    Changes input_string morse code to text.
-  -mb, --morse_to_binary  Changes input_string morse code to binary.
-  -bt, --binary_to_text   Changes input_string binary to text.
-  -bm, --binary_to_morse  Changes input_string binary to morse code.
+  -tb, --text_to_binary   Changes input text to binary.
+  -tm, --text_to_morse    Changes input text to morse code.
+  -mt, --morse_to_text    Changes input morse code to text.
+  -mb, --morse_to_binary  Changes input morse code to binary.
+  -bt, --binary_to_text   Changes input binary to text.
+  -bm, --binary_to_morse  Changes input binary to morse code.
   --help                  Show this message and exit.
 
 ```
