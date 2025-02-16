@@ -28,7 +28,7 @@ They examples above will produce the following output:
 ```bash
     qiLqLqO7gLuO7i6LqOoA
     qiLqLqO7gLuO7i6LqOoA
-    Hello World
+    HELLO WORLD 
  ```
 The binary format is in base64, so it can be easily copied and pasted.
 
