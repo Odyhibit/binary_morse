@@ -23,7 +23,7 @@ Options:
   --help                  Show this message and exit.
 
 ```
-They will produce the following output:
+They examples above will produce the following output:
 
 ```bash
     qiLqLqO7gLuO7i6LqOoA
