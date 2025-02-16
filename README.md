@@ -45,3 +45,8 @@ If you wish to save binary content, and not have it converted to base64, you can
 ```bash
     binmorse.py -tb "Hello World" -o output.dat
 ```
+This will produce a binary file with the contents:
+```
+AA 22 EA 2E A3 BB 80 BB 8E EE 2E 8B A8 EA 00
+```
+Which matches the binary content of the base64 encoded binary morse above.
