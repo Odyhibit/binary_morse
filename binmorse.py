@@ -6,12 +6,12 @@ from utilities import *
 @click.command()
 @click.argument('input_string', required=True, metavar='<input>', type=click.STRING)
 @click.option('-o', '--output_file', help='Output filename. Will overwrite existing files.')
-@click.option('-tb', '--text_to_binary', help='Changes input_string text to binary.', is_flag=True)
-@click.option('-tm', '--text_to_morse', help="Changes input_string text to morse code.", is_flag=True)
-@click.option('-mt', '--morse_to_text', help="Changes input_string morse code to text.", is_flag=True)
-@click.option('-mb', '--morse_to_binary', help="Changes input_string morse code to binary.", is_flag=True)
-@click.option('-bt', '--binary_to_text', help="Changes input_string binary to text.", is_flag=True)
-@click.option('-bm', '--binary_to_morse', help="Changes input_string binary to morse code.", is_flag=True)
+@click.option('-tb', '--text_to_binary', help='Changes input text to binary.', is_flag=True)
+@click.option('-tm', '--text_to_morse', help="Changes input text to morse code.", is_flag=True)
+@click.option('-mt', '--morse_to_text', help="Changes input morse code to text.", is_flag=True)
+@click.option('-mb', '--morse_to_binary', help="Changes input morse code to binary.", is_flag=True)
+@click.option('-bt', '--binary_to_text', help="Changes input binary to text.", is_flag=True)
+@click.option('-bm', '--binary_to_morse', help="Changes input binary to morse code.", is_flag=True)
 def main(input_string, output_file, text_to_binary, text_to_morse, morse_to_text,
          morse_to_binary, binary_to_text, binary_to_morse):
     """Converts text, binary morse, and ascii morse code to each other. Use base64 encoding for binary input.
@@ -56,7 +56,6 @@ def main(input_string, output_file, text_to_binary, text_to_morse, morse_to_text
         print(f"I could not convert {input_string} to anything.")
     else:
         print(printable_output)
-
 
 
 if __name__ == "__main__":
