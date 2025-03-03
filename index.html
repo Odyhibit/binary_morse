@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morse Code Converter</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        .info {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Morse Code Converter</h1>
+
+    <div class="container">
+        <div class="form-group">
+            <label for="text-input">Text (UTF-8):</label>
+            <textarea id="text-input" placeholder="Enter text to convert"></textarea>
+            <div id="text-error" class="error">Invalid text input</div>
+        </div>
+
+        <div class="form-group">
+            <label for="morse-input">Morse Code:</label>
+            <textarea id="morse-input" placeholder="Enter Morse code (dots, dashes, spaces, and slashes)"></textarea>
+            <div id="morse-error" class="error">Invalid Morse code input (use only ., -, /, and space)</div>
+        </div>
+
+        <div class="form-group">
+            <label for="base64-input">Base64 Encoded Binary Morse:</label>
+            <textarea id="base64-input" placeholder="Enter Base64 encoded binary Morse"></textarea>
+            <div id="base64-error" class="error">Invalid Base64 input</div>
+        </div>
+
+        <div class="buttons">
+            <button id="text-to-all">Convert Text to Morse & Base64</button>
+            <button id="morse-to-all">Convert Morse to Text & Base64</button>
+            <button id="base64-to-all">Convert Base64 to Text & Morse</button>
+            <button id="clear-all">Clear All</button>
+        </div>
+
+        <div class="info">
+            <p><strong>Usage:</strong></p>
+            <ul>
+                <li>Enter content in any field and click the corresponding conversion button</li>
+                <li>Morse code format: dots (.), dashes (-), spaces between letters, and slashes (/) between words</li>
+                <li>Base64 encoded binary Morse is a compact representation of Morse code</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Morse code mappings
+        const textToMorseDict = {
+            "A": ".-", "B": "-...", "C": "-.-.", "D": "-..", "E": ".", "F": "..-.",
+            "G": "--.", "H": "....", "I": "..", "J": ".---", "K": "-.-", "L": ".-..",
+            "M": "--", "N": "-.", "O": "---", "P": ".--.", "Q": "--.-", "R": ".-.",
+            "S": "...", "T": "-", "U": "..-", "V": "...-", "W": ".--", "X": "-..-",
+            "Y": "-.--", "Z": "--..", "0": "-----", ",": "--..--", "1": ".----",
+            ".": ".-.-.-", "2": "..---", "?": "..--..", "3": "...--", ";": "-.-.-.",
+            "4": "....-", ":": "---...", "5": ".....", "'": ".----.", "6": "-....",
+            "-": "-....-", "7": "--...", "/": "-..-.", "8": "---..", "(": "-.--..",
+            "9": "----.", ")": "-.--.-", " ": "/", "_": "..--.-", "=": "-...-"
+        };
+
+        // Morse to binary string mappings
+        const morseToBinaryStringDict = {
+            ".": "10", "-": "1110", "_": "1110", " ": "00", "/": "0000"
+        };
+
+        // Text to Morse conversion
+        function textToMorseStr(asciiText) {
+            let morse = "";
+            for (const character of asciiText.toUpperCase()) {
+                if (textToMorseDict[character]) {
+                    morse += textToMorseDict[character];
+                    if (character !== " ") {
+                        morse += " ";
+                    }
+                }
+            }
+            return morse;
+        }
+
+        // Morse to Text conversion
+        function morseStrToText(morse) {
+            let text = "";
+            const words = morse.split("/");
+            for (const word of words) {
+                const letters = word.split(" ");
+                for (const letter of letters) {
+                    if (letter) {
+                        // Find key by value in the dictionary
+                        for (const [key, value] of Object.entries(textToMorseDict)) {
+                            if (value === letter) {
+                                text += key;
+                                break;
+                            }
+                        }
+                    }
+                }
+                text += " ";
+            }
+            return text.trim();
+        }
+
+        // Morse to Binary String conversion
+        function morseStrToBinStr(morseStr) {
+            let binaryStr = "";
+            for (const char of morseStr) {
+                binaryStr += morseToBinaryStringDict[char];
+            }
+            // Pad to full bytes (multiple of 8)
+            const padding = 8 - (binaryStr.length % 8);
+            if (padding < 8) {
+                binaryStr += "0".repeat(padding);
+            }
+            return binaryStr;
+        }
+
+        // Binary String to Byte Array
+        function binStrToByteArray(binaryStr) {
+            const byteArray = [];
+            for (let i = 0; i < binaryStr.length; i += 8) {
+                const byte = binaryStr.substr(i, 8);
+                byteArray.push(parseInt(byte, 2));
+            }
+            return new Uint8Array(byteArray);
+        }
+
+        // Morse to Base64
+        function morseStrToBase64(morseStr) {
+            const binaryStr = morseStrToBinStr(morseStr);
+            const byteArray = binStrToByteArray(binaryStr);
+            return btoa(String.fromCharCode(...byteArray));
+        }
+
+        // Base64 to Binary String
+        function base64ToBinaryString(base64Str) {
+            try {
+                const byteCharacters = atob(base64Str);
+                let binaryString = "";
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    const byte = byteCharacters.charCodeAt(i);
+                    binaryString += byte.toString(2).padStart(8, '0');
+                }
+                return binaryString;
+            } catch (e) {
+                return "";
+            }
+        }
+
+        // Binary String to Morse
+        function binaryStringToMorse(binaryStr) {
+            let morseStr = binaryStr;
+            morseStr = morseStr.replace(/1110/g, "-");
+            morseStr = morseStr.replace(/10/g, ".");
+            morseStr = morseStr.replace(/0000/g, "/");
+            morseStr = morseStr.replace(/00/g, " ");
+            return morseStr.replace(/[0/]+$/, ""); // Remove trailing 0s and slashes
+        }
+
+        // Base64 to Morse
+        function base64ToMorse(base64Str) {
+            return binaryStringToMorse(base64ToBinaryString(base64Str));
+        }
+
+        // Base64 to Text
+        function base64ToText(base64Str) {
+            return morseStrToText(base64ToMorse(base64Str));
+        }
+
+        // Text to Base64
+        function textToBase64(text) {
+            const morseStr = textToMorseStr(text);
+            return morseStrToBase64(morseStr);
+        }
+
+        // Validation functions
+        function isValidMorse(morse) {
+            return /^[.\-/ ]*$/.test(morse);
+        }
+
+        function isValidBase64(base64Str) {
+            return /^[A-Za-z0-9+/=]*$/.test(base64Str);
+        }
+
+        // DOM Element references
+        const textInput = document.getElementById('text-input');
+        const morseInput = document.getElementById('morse-input');
+        const base64Input = document.getElementById('base64-input');
+        const textError = document.getElementById('text-error');
+        const morseError = document.getElementById('morse-error');
+        const base64Error = document.getElementById('base64-error');
+
+        // Button event handlers
+        document.getElementById('text-to-all').addEventListener('click', () => {
+            const text = textInput.value.trim();
+            if (text) {
+                morseInput.value = textToMorseStr(text);
+                base64Input.value = textToBase64(text);
+                hideAllErrors();
+            }
+        });
+
+        document.getElementById('morse-to-all').addEventListener('click', () => {
+            const morse = morseInput.value.trim();
+            if (morse) {
+                if (isValidMorse(morse)) {
+                    textInput.value = morseStrToText(morse);
+                    base64Input.value = morseStrToBase64(morse);
+                    hideAllErrors();
+                } else {
+                    morseError.style.display = 'block';
+                }
+            }
+        });
+
+        document.getElementById('base64-to-all').addEventListener('click', () => {
+            const base64 = base64Input.value.trim();
+            if (base64) {
+                if (isValidBase64(base64)) {
+                    try {
+                        textInput.value = base64ToText(base64);
+                        morseInput.value = base64ToMorse(base64);
+                        hideAllErrors();
+                    } catch (e) {
+                        base64Error.style.display = 'block';
+                    }
+                } else {
+                    base64Error.style.display = 'block';
+                }
+            }
+        });
+
+        document.getElementById('clear-all').addEventListener('click', () => {
+            textInput.value = '';
+            morseInput.value = '';
+            base64Input.value = '';
+            hideAllErrors();
+        });
+
+        function hideAllErrors() {
+            textError.style.display = 'none';
+            morseError.style.display = 'none';
+            base64Error.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
