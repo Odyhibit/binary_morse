@@ -1,4 +1,7 @@
 # Binary Morse Code Converter
+You can try the online version if you don't want to install the CLI.
+https://odyhibit.github.io/binary_morse/
+
 This is a simple script that converts text to ascii morse code, or binary morse code. You can swap between those 3 different mode using options on the command line.
 
 ```bash
